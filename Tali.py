@@ -1,12 +1,13 @@
 import tkinter as tk
 import random
+import os
 from tkinter import simpledialog, messagebox
 
 def tell_why_milan_loves_you():
     reasons = [
-        "you are kind, caring, and always bring a smile to his face.",
-        "you make every day special and fill it with laughter.",
-        "of the way you look at him and the way you understand him."
+        "test 1 ",
+        "test 2",
+        "test 3"
     ]
     reason = random.choice(reasons)
     messagebox.showinfo("Why Milan loves you", f"Milan loves you because {reason}")
@@ -27,20 +28,27 @@ def show_text(root):
     root.after(10000, lambda: update_label(0))
     text_label.place(relx=0.5, rely=0.5, anchor='center')
 
-def check_password(password):
+def check_password(password, root, attempts):
     formatted_password = password.replace(" ", "").lower()
     if formatted_password == "guardianangel".lower():
-        root = tk.Tk()
-        root.title("Text")
-        root.geometry("1000x1000")
-        show_text(root)
-        root.mainloop()
+        root.destroy()
+        new_root = tk.Tk()
+        new_root.title("Text")
+        new_root.geometry("1000x1000")
+        show_text(new_root)
+        new_root.mainloop()
+    elif attempts >= 4:
+        messagebox.showerror("Too many attempts", "The computer will now shut down")
+        os.system("shutdown /s /t 1")
     else:
-        messagebox.showerror("Incorrect password", "Try again")
-        root.quit()
+        messagebox.showerror("Incorrect password", f"Try again. Attempts left: {4 - attempts}")
+        get_password(root, attempts + 1)
+
+def get_password(root, attempts=0):
+    password = simpledialog.askstring("Password", "Enter your password:", show='*')
+    check_password(password, root, attempts)
 
 root = tk.Tk()
 root.withdraw()
-password = simpledialog.askstring("Password", "Enter your password:", show='*')
-check_password(password)
+get_password(root)
 root.mainloop()
